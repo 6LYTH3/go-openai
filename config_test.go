@@ -1,6 +1,7 @@
 package openai_test
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/meguminnnnnnnnn/go-openai"
@@ -15,11 +16,16 @@ func TestGetAzureDeploymentByModel(t *testing.T) {
 		{
 			Model:  "gpt-3.5-turbo",
 			Expect: "gpt-35-turbo",
+			AzureModelMapperFunc: func(model string) string {
+				return regexp.MustCompile(`[.:]`).ReplaceAllString(model, "")
+			},
 		},
 		{
 			Model:  "gpt-3.5-turbo-0301",
 			Expect: "gpt-35-turbo-0301",
-		},
+			AzureModelMapperFunc: func(model string) string {
+				return regexp.MustCompile(`[.:]`).ReplaceAllString(model, "")
+			},
 		{
 			Model:  "text-embedding-ada-002",
 			Expect: "text-embedding-ada-002",

@@ -2,7 +2,6 @@ package openai
 
 import (
 	"net/http"
-	"regexp"
 )
 
 const (
@@ -62,6 +61,15 @@ func DefaultConfig(authToken string) ClientConfig {
 	}
 }
 
+// DefaultAzureConfig returns a default configuration for Azure OpenAI API.
+// It uses the provided API key and base URL, and defaults to the Azure API type.
+// The AzureModelMapperFunc is used to map OpenAI models to Azure deployment names.
+// Example: "gpt-35-turbo" -> "gpt-35-turbo-deployment".
+// Example Func for removing dots and colons from the model name.
+//
+//	AzureModelMapperFunc: func(model string) string {
+//				return regexp.MustCompile(`[.:]`).ReplaceAllString(model, "")
+//			},
 func DefaultAzureConfig(apiKey, baseURL string) ClientConfig {
 	return ClientConfig{
 		authToken:  apiKey,
@@ -70,7 +78,7 @@ func DefaultAzureConfig(apiKey, baseURL string) ClientConfig {
 		APIType:    APITypeAzure,
 		APIVersion: "2023-05-15",
 		AzureModelMapperFunc: func(model string) string {
-			return regexp.MustCompile(`[.:]`).ReplaceAllString(model, "")
+			return model
 		},
 
 		HTTPClient: &http.Client{},
